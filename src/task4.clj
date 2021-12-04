@@ -74,11 +74,6 @@
 
 (defn calc-board-score
   [last-num winner-board]
-  (prn last-num (->> winner-board
-                     flatten
-                     (filter #(< 0 %))
-                     (apply +))
-       winner-board)
   (->> winner-board
        flatten
        (filter #(< 0 %))
