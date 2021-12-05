@@ -15,7 +15,7 @@
       (= (u/abs (- x1 x2))
          (u/abs (- y1 y2)))))
 
-(def diagonal-45-allowed-filter
+(def straight-or-diagonal45-filter
   (filter straight-or-diagonal45?))
 
 (defn get-task-data
@@ -62,7 +62,7 @@
  ;; result 1
  (calc-result (get-task-data straight-lines-filter))
  ;; result 2
- (calc-result (get-task-data diagonal-45-allowed-filter))
+ (calc-result (get-task-data straight-or-diagonal45-filter))
 
  )
 

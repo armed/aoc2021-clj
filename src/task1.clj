@@ -10,6 +10,12 @@
 
 (defn task1-result
   []
+  #_ "better solution (seen from tonsky)"
+  #_ (->> (next task-data)
+          (map - task-data)
+          (filter neg?)
+          (count))
+  #_ "my abomination"
   (first
    (reduce (fn [[cnt prev] cur]
              [(if (> cur prev) (inc cnt) cnt)
@@ -19,6 +25,16 @@
 
 (defn task2-result
   []
+  #_ "better solutin (like 1)"
+  #_ "forgot that partition have step param"
+  #_ (->>
+      (map (fn [w1 w2]
+             (- (apply + w1) (apply + w2)))
+           (partition 3 1 task-data)
+           (partition 3 1 (next task-data)))
+      (filter neg?)
+      count)
+  #_ "my abomination"
   (loop [td task-data
          cnt 0]
     (let [w1 (take 3 td)
@@ -34,4 +50,4 @@
 (comment
  (task1-result)
  (task2-result)
-  )
+ )

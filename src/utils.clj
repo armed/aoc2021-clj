@@ -1,8 +1,10 @@
 (ns utils)
 
 (defn parse-int
-  [s]
-  (Integer/parseInt s))
+  ([s]
+   (parse-int s 10))
+  ([s base]
+   (Integer/parseInt s base)))
 
 (defn abs
   [v]

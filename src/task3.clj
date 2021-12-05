@@ -15,7 +15,7 @@
 (defn get-common-bits
   [bit lines]
   (let [half (/ (count lines) 2)
-        comp-fn (if (= 1 bit) > <)]
+        comp-fn (if (zero? bit) < >)]
     (as-> lines n
       (apply map + n)
       (map (fn [v]
@@ -27,7 +27,7 @@
 
 (defn bit-line-as-int
   [l]
-  (Integer/parseInt (string/join l) 2))
+  (u/parse-int (string/join l) 2))
 
 (defn get-param
   [bit]
