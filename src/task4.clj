@@ -35,8 +35,7 @@
 
 (defn rotate-board
   [board]
-  (for [x (range 5)]
-    (map #(nth % x) board)))
+  (apply map vector board))
 
 (defn seek
   [rows]
