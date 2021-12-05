@@ -25,8 +25,8 @@
 
 (defn task2-result
   []
-  #_ "better solutin (like 1)"
-  #_ "forgot that partition have step param"
+  #_ "better solutin (like in 1)"
+  #_ "forgot that partition has step param"
   #_ (->>
       (map (fn [w1 w2]
              (- (apply + w1) (apply + w2)))
