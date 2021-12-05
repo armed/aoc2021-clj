@@ -1,11 +1,12 @@
 (ns task2
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [utils :as u]))
 
 (defn parse-command-and-value
   [s]
   (let [[c v] (string/split s #"\s")]
     (let [direction (keyword c)
-          amount (Integer/parseInt v)
+          amount (u/parse-int v)
           up? (= :up direction)]
       (if up?
         [:down (- amount)]

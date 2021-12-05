@@ -1,9 +1,6 @@
 (ns task3
-  (:require [clojure.string :as string]))
-
-(defn parse-int
-  [s]
-  (Integer/parseInt s))
+  (:require [clojure.string :as string]
+            [utils :as u]))
 
 (def lines
   (->> "src/task3_input.txt"
@@ -12,7 +9,7 @@
        (transduce
         (comp
          (map #(string/split % #""))
-         (map #(map parse-int %)))
+         (map #(map u/parse-int %)))
         conj)))
 
 (defn get-common-bits

@@ -1,6 +1,6 @@
 (ns task5
   (:require [clojure.string :as string]
-            [task3 :as t3]))
+            [utils :as u]))
 
 (defn straight?
   [[[x1 y1] [x2 y2]]]
@@ -10,11 +10,10 @@
   (filter straight?))
 
 (defn straight-or-diagonal45?
-  [[[x1 y1] [x2 y2]]]
-  (or (= x1 x2)
-      (= y1 y2)
-      (= (Math/abs ^long (- x1 x2))
-         (Math/abs ^long (- y1 y2)))))
+  [[[x1 y1] [x2 y2] :as pairs]]
+  (or (straight? pairs)
+      (= (u/abs (- x1 x2))
+         (u/abs (- y1 y2)))))
 
 (def diagonal-45-allowed-filter
   (filter straight-or-diagonal45?))
@@ -31,7 +30,7 @@
                 (map
                  #(as-> % n
                     (string/split n #",")
-                    (map t3/parse-int n))
+                    (map u/parse-int n))
                  from->to)))
          line-filter)
         conj)))
@@ -47,8 +46,8 @@
   [task-data]
   (->> task-data
        (reduce (fn [diagram-data [[x1 y1] [x2 y2]]]
-                 (let [pairs-count (+ 1 (max (Math/abs ^long (- x1 x2))
-                                             (Math/abs ^long (- y1 y2))))]
+                 (let [pairs-count (+ 1 (max (u/abs (- x1 x2))
+                                             (u/abs (- y1 y2))))]
                    (->> (map (fn [x y] {(str x "," y) 1})
                              (coord-range pairs-count x1 x2)
                              (coord-range pairs-count y1 y2))

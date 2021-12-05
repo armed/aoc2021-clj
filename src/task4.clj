@@ -1,6 +1,6 @@
 (ns task4
   (:require [clojure.string :as string]
-            [task3 :as t3]))
+            [utils :as u]))
 
 (def raw-data
   (as-> "src/task4_input.txt" n
@@ -12,7 +12,7 @@
   (as-> raw-data n
     (first n)
     (string/split n #",")
-    (map t3/parse-int n)))
+    (map u/parse-int n)))
 
 (defn get-game-boards
   [raw-data]
@@ -28,7 +28,7 @@
                      (map string/trim)
                      (map #(string/replace % #"\s+" " "))
                      (map #(string/split % #" "))
-                     (map #(map t3/parse-int %)))
+                     (map #(map u/parse-int %)))
                     conj
                     lines)))
       boards)))

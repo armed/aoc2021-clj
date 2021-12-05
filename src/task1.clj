@@ -1,11 +1,12 @@
 (ns task1
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [utils :as u]))
 
 (def task-data
   (as-> "src/task1_input.txt" n
     (slurp n)
     (string/split n #"\s")
-    (map #(Integer/parseInt %) n)))
+    (map u/parse-int n)))
 
 (defn task1-result
   []
