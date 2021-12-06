@@ -22,16 +22,11 @@
   (->> "src/task5_input.txt"
        (slurp)
        (string/split-lines)
-       (transduce
-        (comp
-         (map #(string/split % #" -> "))
-         (map (fn [from->to]
-                (map
-                 #(as-> % n
-                    (string/split n #",")
-                    (map u/parse-int n))
-                 from->to))))
-        conj)))
+       (map (comp
+             (partial partition 2)
+             (partial map u/parse-int)
+             rest
+             (partial re-matches #"(\d+),(\d+)\s->\s(\d+),(\d+)")))))
 
 (defn coord-range
   [pairs-count c1 c2]
