@@ -6,24 +6,21 @@
   [[[x1 y1] [x2 y2]]]
   (or (= x1 x2) (= y1 y2)))
 
-(def straight-lines-filter
-  (filter straight?))
-
 (defn straight-or-diagonal45?
   [[[x1 y1] [x2 y2] :as pairs]]
   (or (straight? pairs)
       (= (u/abs (- x1 x2))
          (u/abs (- y1 y2)))))
 
+(def straight-lines-filter
+  (partial filter straight?))
+
 (def straight-or-diagonal45-filter
-  (filter straight-or-diagonal45?))
+  (partial filter straight-or-diagonal45?))
 
-(def raw-data
-  (slurp "src/task5_input.txt"))
-
-(defn get-task-data
-  [raw-data line-filter]
-  (->> raw-data
+(def measurement-data
+  (->> "src/task5_input.txt"
+       (slurp)
        (string/split-lines)
        (transduce
         (comp
@@ -33,8 +30,7 @@
                  #(as-> % n
                     (string/split n #",")
                     (map u/parse-int n))
-                 from->to)))
-         line-filter)
+                 from->to))))
         conj)))
 
 (defn coord-range
@@ -80,20 +76,20 @@
  ;; result 1
  (time
   (calc-result-using-hashmap
-   (get-task-data raw-data straight-lines-filter)))
+   (straight-lines-filter measurement-data)))
 
  (time
   (calc-result-using-frequencies
-   (get-task-data raw-data straight-lines-filter)))
+   (straight-lines-filter measurement-data)))
 
  ;; result 2
  (time
   (calc-result-using-hashmap
-   (get-task-data raw-data straight-or-diagonal45-filter)))
+   (straight-or-diagonal45-filter measurement-data)))
 
  (time
   (calc-result-using-frequencies
-   (get-task-data raw-data straight-or-diagonal45-filter)))
+   (straight-or-diagonal45-filter measurement-data)))
  )
 
 
