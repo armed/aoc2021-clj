@@ -18,10 +18,12 @@
 (def straight-or-diagonal45-filter
   (filter straight-or-diagonal45?))
 
+(def raw-data
+  (slurp "src/task5_input.txt"))
+
 (defn get-task-data
-  [line-filter]
-  (->> "src/task5_input.txt"
-       (slurp)
+  [raw-data line-filter]
+  (->> raw-data
        (string/split-lines)
        (transduce
         (comp
@@ -42,7 +44,7 @@
     (let [step (if (> c2 c1) 1 -1)]
       (range c1 (+ c2 step) step))))
 
-(defn calc-result
+(defn calc-result-using-hashmap
   [task-data]
   (->> task-data
        (reduce (fn [diagram-data [[x1 y1] [x2 y2]]]
@@ -58,12 +60,40 @@
        (filter #(> % 1))
        count))
 
+(defn calc-result-using-frequencies
+  [task-data]
+  (->> task-data
+       (reduce (fn [diagram-data [[x1 y1] [x2 y2]]]
+                 (let [pairs-count (+ 1 (max (u/abs (- x1 x2))
+                                             (u/abs (- y1 y2))))]
+                   (->> (map vector
+                             (coord-range pairs-count x1 x2)
+                             (coord-range pairs-count y1 y2))
+                        (frequencies)
+                        (merge-with + diagram-data))))
+               {})
+       vals
+       (filter #(> % 1))
+       count))
+
 (comment
  ;; result 1
- (calc-result (get-task-data straight-lines-filter))
- ;; result 2
- (calc-result (get-task-data straight-or-diagonal45-filter))
+ (time
+  (calc-result-using-hashmap
+   (get-task-data raw-data straight-lines-filter)))
 
+ (time
+  (calc-result-using-frequencies
+   (get-task-data raw-data straight-lines-filter)))
+
+ ;; result 2
+ (time
+  (calc-result-using-hashmap
+   (get-task-data raw-data straight-or-diagonal45-filter)))
+
+ (time
+  (calc-result-using-frequencies
+   (get-task-data raw-data straight-or-diagonal45-filter)))
  )
 
 
