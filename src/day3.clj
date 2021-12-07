@@ -1,9 +1,9 @@
-(ns task3
+(ns day3
   (:require [clojure.string :as string]
             [utils :as u]))
 
 (def lines
-  (->> "src/task3_input.txt"
+  (->> "src/day3_input.txt"
        (slurp)
        (string/split-lines)
        (transduce

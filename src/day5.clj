@@ -1,4 +1,4 @@
-(ns task5
+(ns day5
   (:require [clojure.string :as string]
             [utils :as u]))
 
@@ -19,7 +19,7 @@
   (partial filter straight-or-diagonal45?))
 
 (def measurement-data
-  (->> "src/task5_input.txt"
+  (->> "src/day5_input.txt"
        (slurp)
        (string/split-lines)
        (map (comp
@@ -36,8 +36,8 @@
       (range c1 (+ c2 step) step))))
 
 (defn calc-result-using-hashmap
-  [task-data]
-  (->> task-data
+  [day-input]
+  (->> day-input
        (reduce (fn [diagram-data [[x1 y1] [x2 y2]]]
                  (let [pairs-count (+ 1 (max (u/abs (- x1 x2))
                                              (u/abs (- y1 y2))))]
@@ -52,8 +52,8 @@
        count))
 
 (defn calc-result-using-frequencies
-  [task-data]
-  (->> task-data
+  [day-input]
+  (->> day-input
        (reduce (fn [diagram-data [[x1 y1] [x2 y2]]]
                  (let [pairs-count (+ 1 (max (u/abs (- x1 x2))
                                              (u/abs (- y1 y2))))]

@@ -1,9 +1,9 @@
-(ns task4
+(ns day4
   (:require [clojure.string :as string]
             [utils :as u]))
 
 (def raw-data
-  (as-> "src/task4_input.txt" n
+  (as-> "src/day4_input.txt" n
     (slurp n)
     (string/split-lines n)))
 

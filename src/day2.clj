@@ -1,4 +1,4 @@
-(ns task2
+(ns day2
   (:require [clojure.string :as string]
             [utils :as u]))
 
@@ -12,8 +12,8 @@
         [:down (- amount)]
         [direction amount]))))
 
-(def task-data
-  (as-> "src/task2_input.txt" n
+(def day-input
+  (as-> "src/day2_input.txt" n
     (slurp n)
     (string/split n #"\n")
     (map parse-command-and-value n)))
@@ -23,8 +23,8 @@
   (+ s v))
 
 (defn calc-result-1
-  [task-data]
-  (->> task-data
+  [day-input]
+  (->> day-input
        (reduce (fn [acc [op val]]
                  (update acc op inc-by val))
                {:down 0 :forward 0})
@@ -32,8 +32,8 @@
        (apply *)))
 
 (defn calc-result-2
-  [task-data]
-  (->> task-data
+  [day-input]
+  (->> day-input
        (reduce (fn [[down forward aim] [op val]]
                  (let [f? (= :forward op)]
                    [(if f? (+ down (* aim val)) down)
@@ -44,6 +44,6 @@
        (apply *)))
 
 (comment
- (calc-result-1 task-data)
- (calc-result-2 task-data)
+ (calc-result-1 day-input)
+ (calc-result-2 day-input)
  )
