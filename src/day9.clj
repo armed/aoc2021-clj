@@ -63,7 +63,7 @@
 
 (defn scan-basin
   ([heatmap row col]
-   (scan-basin heatmap row col #{}))
+   (second (scan-basin heatmap row col #{})))
   ([heatmap row col visited]
    (let [current-visited (conj visited [row col])
          level (get-in heatmap [row col])
@@ -83,7 +83,7 @@
   (as-> heatmap n
     (find-levels n)
     (:lowest-levels n)
-    (map (fn [[r c]] (second (scan-basin heatmap r c))) n)
+    (map (fn [[r c]] (scan-basin heatmap r c)) n)
     (sort-by count n)
     (reverse n)
     (take 3 n)
