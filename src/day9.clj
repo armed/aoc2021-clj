@@ -62,6 +62,7 @@
     (:risk-level result)))
 
 (defn scan-basin
+  "Not stack frendly, but sufficient for day input data"
   ([heatmap row col]
    (second (scan-basin heatmap row col #{})))
   ([heatmap row col visited]
