@@ -22,35 +22,24 @@
 
 (defn get-adj-coords
   [r c]
-  (set
-   (filter
-    (fn [[r c]]
-      (and (>= r 0) (>= c 0)))
-    [[(dec r) c]
-     [(inc r) c]
-     [r (dec c)]
-     [r (inc c)]])))
+  (set [[(dec r) c] [(inc r) c] [r (dec c)] [r (inc c)]]))
 
-(defn get-lowest-level-data
+(defn get-lowest-level
   [heatmap r c]
   (let [self (get-in heatmap [r c])
         coords (get-adj-coords r c)
         adjacents (map #(get-in heatmap % INFINITY) coords)]
     (when (every? (partial < self) adjacents)
-      [self coords])))
+      self)))
 
 (defn find-levels
   [heatmap]
-  (reduce (fn [{:keys [ignored risk-level lowest-levels] :as acc} [r c]]
-            (if (contains? ignored [r c])
-              acc
-              (if-let [[level coords] (get-lowest-level-data heatmap r c)]
-                {:risk-level (+ risk-level level 1)
-                 :lowest-levels (conj lowest-levels [r c])
-                 :ignored (set/union ignored (set coords))}
-                acc)))
-          {:ignored #{}
-           :lowest-levels #{}
+  (reduce (fn [{:keys [risk-level lowest-levels] :as acc} [r c]]
+            (if-let [level (get-lowest-level heatmap r c)]
+              {:risk-level (+ risk-level level 1)
+               :lowest-levels (conj lowest-levels [r c])}
+              acc))
+          {:lowest-levels #{}
            :risk-level 0}
           (for [r (range (count heatmap))
                 c (range (count (first heatmap)))]
@@ -62,22 +51,20 @@
     (:risk-level result)))
 
 (defn scan-basin
-  "Not stack frendly, but sufficient for day input data"
+  "Not stack frendly, but sufficient for day input size"
   ([heatmap row col]
-   (second (scan-basin heatmap row col #{})))
+   (scan-basin heatmap row col #{}))
   ([heatmap row col visited]
    (let [current-visited (conj visited [row col])
-         level (get-in heatmap [row col])
-         coords [row col]]
+         level (get-in heatmap [row col])]
      (if (and level (> 9 level))
        (if-let [adj (seq (set/difference (get-adj-coords row col) visited))]
-         (reduce (fn [[vis crds] [r c]]
-                   (let [[v c] (scan-basin heatmap r c vis)]
-                     [(set/union vis v) (into crds c)]))
-                 [current-visited #{coords}]
+         (reduce (fn [vis [r c]]
+                   (set/union vis (scan-basin heatmap r c vis)))
+                 current-visited
                  adj)
-         [current-visited #{coords}])
-       [current-visited #{}]))))
+         current-visited)
+       current-visited))))
 
 (defn calc-task-2
   [heatmap]
