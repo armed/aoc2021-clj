@@ -69,7 +69,7 @@
 
 (defn run-step
   [cave-state]
-  (loop [state cave-state
+  (loop [state (perform-step cave-state)
          energy (find-max-energy state)
          flashed #{}]
     (if energy
@@ -87,7 +87,7 @@
          cnt 0]
     (if (zero? steps-left)
       cnt
-      (let [[state flashed-count] (run-step (perform-step state))]
+      (let [[state flashed-count] (run-step state)]
         (recur state
                (dec steps-left)
                (+ cnt flashed-count))))))
@@ -102,8 +102,7 @@
          step 0]
     (if (all-flash? state)
       step
-      (let [[state] (run-step (perform-step state))]
-        (recur state (inc step))))))
+      (recur (-> state run-step first) (inc step)))))
 
 (comment
  (calc-task-1 test-input)
