@@ -3,10 +3,12 @@
             [utils :as u]))
 
 (def closing? #{\) \} \] \>})
+
 (def open-pairs {\) \(
                  \} \{
                  \] \[
                  \> \<})
+
 (def close-pairs {\( \)
                   \{ \}
                   \[ \]
@@ -37,8 +39,7 @@
          open-chars []]
     (cond
       (nil? c) [open-chars nil]
-      (and (closing? c) (not= (last open-chars)
-                              (get open-pairs c)))
+      (and (closing? c) (not= (last open-chars) (get open-pairs c)))
       [open-chars c]
 
       :else
@@ -57,11 +58,7 @@
 
 (defn get-score
   [points]
-  (prn points)
-  (reduce (fn [score point]
-            (+ (* score 5) point))
-          0
-          points))
+  (reduce (fn [score point] (+ (* score 5) point)) 0 points))
 
 (defn calc-task-2
   [input]
@@ -73,28 +70,20 @@
                       (map first)
                       (map #(map (partial get close-pairs) %))
                       (map reverse)
-                      (map string/join)
                       (map #(map (partial get close-points) %))
                       (map get-score))
                      conj)
-                    (flatten))]
-    (->> scores
-         (drop (count scores)))))
+                    (flatten)
+                    (sort))]
+    (-> (/ (dec (count scores)) 2)
+        (drop scores)
+        (first))))
 
 (comment
- (map #(map (partial get close-points) %) [(seq "])}>")])
- (get-score '(2 1 3 4))
- (filter (fn [line]
-           (nil? (scan-line line)))
-         test-input)
-
- (keep (comp not scan-line) test-input)
  (calc-task-1 test-input)
  (calc-task-1 day-input)
 
  (calc-task-2 test-input)
+ (calc-task-2 day-input)
 
- (scan-line "<{([{{}}[<[[[<>{}]]]>[]]")
-
- (map (comp first scan-line) test-input)
  )
