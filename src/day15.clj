@@ -16,8 +16,8 @@
 
 (defn heruistic
   [[fin-row fin-col] [row col]]
-  (Math/sqrt (+ (Math/pow (- fin-row row) 2)
-                (Math/pow (- fin-col col) 2))))
+  (+ (u/abs (- fin-row row))
+     (u/abs (- fin-col col))))
 
 (defn exists?
   [graph [row col]]
@@ -122,6 +122,7 @@
     (extend-map test-input 5))
 
  (find-minimum-risk day-input)
- (find-minimum-risk (extend-map day-input 5))
+ (time
+  (find-minimum-risk (extend-map day-input 5)))
 
  )
