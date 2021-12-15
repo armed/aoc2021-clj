@@ -23,16 +23,14 @@
 
 (defn perform-step
   [rules pairs]
-  (let [new-pairs
-        (reduce (fn [acc [[a b :as pair] amount]]
-                  (let [incrementer (make-incrementer amount)
-                        l (get rules pair)]
-                    (-> acc
-                        (update (str a l) incrementer)
-                        (update (str l b) incrementer))))
-                {}
-                pairs)]
-    new-pairs))
+  (reduce (fn [acc [[a b :as pair] amount]]
+            (let [incrementer (make-incrementer amount)
+                  l (get rules pair)]
+              (-> acc
+                  (update (str a l) incrementer)
+                  (update (str l b) incrementer))))
+          {}
+          pairs))
 
 (defn count-letters
   [first-letter pairs]

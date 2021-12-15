@@ -2,9 +2,9 @@
 
 (defn parse-int
   ([s]
-   (parse-int s 10))
+   (parse-int (str s) 10))
   ([s base]
-   (Integer/parseInt s base)))
+   (Integer/parseInt (str s) base)))
 
 (defn abs
   [v]
