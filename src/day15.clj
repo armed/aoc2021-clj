@@ -14,11 +14,6 @@
 (def test-input-2 (parse-input "src/day15_test_input_2.txt"))
 (def day-input (parse-input "src/day15_input.txt"))
 
-(defn heruistic
-  [[fin-row fin-col] [row col]]
-  (+ (u/abs (- fin-row row))
-     (u/abs (- fin-col col))))
-
 (defn exists?
   [graph [row col]]
   (and (>= row 0)
@@ -34,7 +29,7 @@
    [row (inc col)]])
 
 (defn scan-neighbours
-  [{:keys [graph finish current risk-levels node-links]}]
+  [graph current node-links risk-levels]
   (loop [candidates (priority-map)
          nx (->> current (find-neighbours) (filter #(exists? graph %)))
          risks risk-levels
@@ -44,7 +39,7 @@
             new-cost (+ cost (get-in graph current))
             nx (rest nx)]
         (if (< new-cost (get risks n Integer/MAX_VALUE))
-          (let [priority (+ (heruistic finish n) new-cost)]
+          (let [priority new-cost]
             (recur (assoc candidates n priority)
                    nx
                    (assoc risks n new-cost)
@@ -61,19 +56,19 @@
            node-links {start nil}
            risk-levels {start 0}]
       (if-let [current (ffirst candidates)]
-        (let [[nbs risks links] (scan-neighbours {:graph graph
-                                                  :current current
-                                                  :node-links node-links
-                                                  :risk-levels risk-levels
-                                                  :finish finish})]
-          (recur (conj (pop candidates) nbs) risks links))
-        {:node-links node-links
-         :risk-levels risk-levels}))))
+        (if (= finish current)
+          node-links
+          (let [[nbs risks links] (scan-neighbours graph
+                                                   current
+                                                   node-links
+                                                   risk-levels)]
+            (recur (conj (pop candidates) nbs) risks links)))
+        node-links))))
 
 (defn find-minimum-risk
   [input]
   (let [size (dec (count input))
-        {:keys [node-links]} (find-path input)
+        node-links (find-path input)
         path (loop [current [size size]
                     path []]
                (if (= [0 0] current)
