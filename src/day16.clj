@@ -10,33 +10,18 @@
   (u/parse-int bytes 2))
 
 (def hexmap
-  {\0 "0000"
-   \1 "0001"
-   \2 "0010"
-   \3 "0011"
-   \4 "0100"
-   \5 "0101"
-   \6 "0110"
-   \7 "0111"
-   \8 "1000"
-   \9 "1001"
-   \A "1010"
-   \B "1011"
-   \C "1100"
-   \D "1101"
-   \E "1110"
+  {\0 "0000" \1 "0001" \2 "0010" \3 "0011" \4 "0100"
+   \5 "0101" \6 "0110" \7 "0111" \8 "1000" \9 "1001"
+   \A "1010" \B "1011" \C "1100" \D "1101" \E "1110"
    \F "1111"})
 
 (defn decode
   [hex]
-  (string/join
-   (mapv #(get hexmap %) hex)))
+  (string/join (mapv #(get hexmap %) hex)))
 
 (defn parse-input
   [input-file-name]
-  (->> input-file-name
-       (slurp)
-       (decode)))
+  (->> input-file-name (slurp) (decode)))
 
 (def day-input (parse-input "src/day16_input.txt"))
 
@@ -68,8 +53,7 @@
           num current]
       (if (= \0 bit)
         (let [data (string/join (into nums num))]
-          {:body rest-body
-           :data data})
+          {:body rest-body :data data})
         (recur (into nums num)
                rest-body
                (inc total-groups))))))
@@ -97,8 +81,7 @@
          sub-body (drop LEN_1_SIZE op-body)
          sub-packets []]
     (if (zero? total-packets)
-      {:body sub-body
-       :packets sub-packets}
+      {:body sub-body :packets sub-packets}
       (let [{:keys [body packets]} (read-packet sub-body)]
         (recur (dec total-packets) body (into sub-packets packets))))))
 
@@ -118,19 +101,15 @@
                                       (read-op data-body)
                                       (read-literal data-body))]
     {:body (string/join body)
-     :packets [{:version v
-                :type t
-                :packets packets
-                :data data}]}))
+     :packets [{:version v :type t :packets packets :data data}]}))
 
 (defn calc-version-sum
   [parse-data]
   (loop [packets (:packets parse-data)
          sum 0]
     (if (seq packets)
-      (recur
-       (flatten (filter identity (map :packets packets)))
-       (apply + sum (map :version packets)))
+      (recur (flatten (filter identity (map :packets packets)))
+             (apply + sum (map :version packets)))
       sum)))
 
 (defn calc-operations
@@ -148,10 +127,7 @@
 
 (defn read-packets
   [input]
-  (-> input
-      read-packet
-      :packets
-      first))
+  (-> input read-packet :packets first))
 
 (tests
  ; task 1
