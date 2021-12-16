@@ -117,24 +117,6 @@
         (read-op-1 op-body))
       {:body op-body})))
 
-(defn read-packet-orig
-  [input]
-  (loop [packet-body input
-         all-packets []]
-    (let [data-body (drop HEADER_SIZE packet-body)]
-      (if (valid-body? data-body)
-        (let [[v t] (parse-header (take HEADER_SIZE packet-body))
-              {:keys [body packets data]}
-              (if (op? t)
-                (read-op data-body)
-                (read-literal data-body))]
-          (recur body (conj all-packets {:version v
-                                         :type t
-                                         :packets packets
-                                         :data data})))
-        {:body (string/join packet-body)
-         :packets all-packets}))))
-
 (defn read-packet
   [input]
   (let [data-body (drop HEADER_SIZE input)]
