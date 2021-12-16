@@ -40,17 +40,12 @@
 
 (def day-input (parse-input "src/day16_input.txt"))
 
-(def MIN_PACKET_SIZE 7)
 (def MIN_BODY_SIZE 2)
 (def HEADER_SIZE 6)
 (def LEN_0_SIZE 15)
 (def LEN_1_SIZE 11)
 
 (def op? (partial not= 4))
-
-(defn valid-packet?
-  [body]
-  (>= (count body) MIN_PACKET_SIZE))
 
 (defn valid-body?
   [body]
@@ -101,7 +96,7 @@
   (loop [total-packets (bits->int 11 op-body)
          sub-body (drop LEN_1_SIZE op-body)
          sub-packets []]
-    (if (or (zero? total-packets) (not (valid-body? sub-body)))
+    (if (zero? total-packets)
       {:body sub-body
        :packets sub-packets}
       (let [{:keys [body packets]} (read-packet sub-body)]
@@ -111,26 +106,22 @@
   [input]
   (let [length-type-id (first input)
         op-body (rest input)]
-    (if (valid-body? op-body)
-      (if (= \0 length-type-id)
-        (read-op-0 op-body)
-        (read-op-1 op-body))
-      {:body op-body})))
+    (if (= \0 length-type-id)
+      (read-op-0 op-body)
+      (read-op-1 op-body))))
 
 (defn read-packet
   [input]
-  (let [data-body (drop HEADER_SIZE input)]
-    (if (valid-body? data-body)
-      (let [[v t] (parse-header (take HEADER_SIZE input))
-            {:keys [body packets data]}
-            (if (op? t)
-              (read-op data-body)
-              (read-literal data-body))]
-        {:body (string/join body)
-         :packets [{:version v
-                    :type t
-                    :packets packets
-                    :data data}]}))))
+  (let [data-body (drop HEADER_SIZE input)
+        [v t] (parse-header (take HEADER_SIZE input))
+        {:keys [body packets data]} (if (op? t)
+                                      (read-op data-body)
+                                      (read-literal data-body))]
+    {:body (string/join body)
+     :packets [{:version v
+                :type t
+                :packets packets
+                :data data}]}))
 
 (defn calc-version-sum
   [parse-data]
@@ -162,11 +153,13 @@
       :packets
       first))
 
-(comment
+(tests
  ; task 1
  (calc-version-sum (read-packet day-input))
+ := 974
  ; task 2
  (calc-operations (read-packets day-input))
+ := 180616437720
  )
 
 (tests
