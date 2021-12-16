@@ -64,10 +64,6 @@
             (recur (into (disj candidates candidate) nbs) risks links)))
         node-links))))
 
-(comment
- (let [ss (sorted-set [0 [0 0]] [17 [1 0]])]
-   (disj ss (first ss))))
-
 (defn find-minimum-risk
   [input]
   (let [size (dec (count input))
