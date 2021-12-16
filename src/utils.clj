@@ -4,7 +4,7 @@
   ([s]
    (parse-int (str s) 10))
   ([s base]
-   (Integer/parseInt (str s) base)))
+   (Long/parseLong (str s) base)))
 
 (defn abs
   [v]
