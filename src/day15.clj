@@ -1,7 +1,6 @@
 (ns day15
   (:require [clojure.string :as string]
-            [utils :as u]
-            [clojure.data.priority-map :refer [priority-map]]))
+            [utils :as u]))
 
 (defn parse-input
   [input-file-name]
@@ -30,7 +29,7 @@
 
 (defn scan-neighbours
   [graph current node-links risk-levels]
-  (loop [candidates (priority-map)
+  (loop [candidates []
          nx (->> current (find-neighbours) (filter #(exists? graph %)))
          risks risk-levels
          links node-links]
@@ -40,7 +39,7 @@
             nx (rest nx)]
         (if (< new-cost (get risks n Integer/MAX_VALUE))
           (let [priority new-cost]
-            (recur (assoc candidates n priority)
+            (recur (conj candidates [priority n])
                    nx
                    (assoc risks n new-cost)
                    (assoc links n current)))
@@ -52,18 +51,22 @@
   (let [start [0 0]
         finish [(dec (count graph))
                 (dec (-> graph first count))]]
-    (loop [candidates (priority-map start 0)
+    (loop [candidates (sorted-set [0 start])
            node-links {start nil}
            risk-levels {start 0}]
-      (if-let [current (ffirst candidates)]
+      (if-let [[_ current :as candidate] (first candidates)]
         (if (= finish current)
           node-links
           (let [[nbs risks links] (scan-neighbours graph
                                                    current
                                                    node-links
                                                    risk-levels)]
-            (recur (conj (pop candidates) nbs) risks links)))
+            (recur (into (disj candidates candidate) nbs) risks links)))
         node-links))))
+
+(comment
+ (let [ss (sorted-set [0 [0 0]] [17 [1 0]])]
+   (disj ss (first ss))))
 
 (defn find-minimum-risk
   [input]
