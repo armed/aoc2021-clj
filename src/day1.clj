@@ -10,12 +10,12 @@
 
 (defn task1-result
   []
-  #_ "better solution (seen from tonsky)"
-  #_ (->> (next day-input)
-          (map - day-input)
-          (filter neg?)
-          (count))
-  #_ "my abomination"
+  #_"better solution (seen from tonsky)"
+  #_(->> (next day-input)
+         (map - day-input)
+         (filter neg?)
+         (count))
+  #_"my abomination"
   (first
    (reduce (fn [[cnt prev] cur]
              [(if (> cur prev) (inc cnt) cnt)
@@ -25,16 +25,16 @@
 
 (defn task2-result
   []
-  #_ "better solutin (like in 1)"
-  #_ "forgot that partition has step param"
-  #_ (->>
-      (map (fn [w1 w2]
-             (- (apply + w1) (apply + w2)))
-           (partition 3 1 day-input)
-           (partition 3 1 (next day-input)))
-      (filter neg?)
-      count)
-  #_ "my abomination"
+  #_"better solutin (tonsky)"
+  #_"forgot that partition has step param"
+  #_(->>
+     (map (fn [w1 w2]
+            (- (apply + w1) (apply + w2)))
+          (partition 3 1 day-input)
+          (partition 3 1 (next day-input)))
+     (filter neg?)
+     count)
+  #_"my abomination"
   (loop [td day-input
          cnt 0]
     (let [w1 (take 3 td)
